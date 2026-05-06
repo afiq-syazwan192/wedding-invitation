@@ -418,6 +418,72 @@
     margin: 0;
   }
 
+
+  /* ===== LOADING SCREEN ===== */
+  #loading {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #0d1a0f;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.8rem;
+  }
+
+  #loading.show { display: flex; }
+  #loading.fade-out {
+    animation: fadeOutLoad 0.6s ease forwards;
+  }
+
+  @keyframes fadeOutLoad {
+    to { opacity: 0; visibility: hidden; }
+  }
+
+  .loading-seal {
+    width: 70px;
+    height: 70px;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.5));
+    animation: sealSpin 3s linear infinite;
+  }
+
+  @keyframes sealSpin {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.08); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .loading-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: rgba(201,168,76,0.7);
+    text-transform: uppercase;
+    animation: loadPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes loadPulse {
+    0%, 100% { opacity: 0.3; }
+    50%       { opacity: 1; }
+  }
+
+  .loading-bar-wrap {
+    width: 140px;
+    height: 1px;
+    background: rgba(201,168,76,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .loading-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
 </style>
 </head>
 <body>
@@ -563,9 +629,39 @@
     music.volume = 0.45;
     music.play().catch(() => {});
 
-    // Hide cover, show invitation with Canva embed
+    // Hide cover, show loading
     document.getElementById('cover').classList.add('hide');
-    document.getElementById('invitation').classList.add('show');
+    const loading = document.getElementById('loading');
+    loading.classList.add('show');
+
+    // Animate loading bar
+    const bar = document.getElementById('loadingBar');
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 18;
+      if (progress >= 90) { progress = 90; clearInterval(interval); }
+      bar.style.width = progress + '%';
+    }, 200);
+
+    // Wait for iframe to load
+    const iframe = document.querySelector('#invitation iframe');
+    let shown = false;
+
+    function showInvitation() {
+      if (shown) return;
+      shown = true;
+      clearInterval(interval);
+      bar.style.width = '100%';
+      setTimeout(() => {
+        loading.classList.add('fade-out');
+        document.getElementById('invitation').classList.add('show');
+        setTimeout(() => loading.classList.remove('show'), 600);
+      }, 400);
+    }
+
+    // Show invitation when iframe loads or after max 6s
+    iframe.addEventListener('load', showInvitation);
+    setTimeout(showInvitation, 6000);
   }
 
   // Toggle music
@@ -583,5 +679,26 @@
     playing = !playing;
   }
 </script>
+
+<!-- ===== LOADING SCREEN ===== -->
+<div id="loading">
+  <svg class="loading-seal" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="lg" cx="38%" cy="32%">
+        <stop offset="0%" stop-color="#e8c97a"/>
+        <stop offset="50%" stop-color="#c9a84c"/>
+        <stop offset="100%" stop-color="#8a6010"/>
+      </radialGradient>
+    </defs>
+    <polygon points="40,3 49,18 66,12 60,29 76,38 60,47 66,64 49,58 40,73 31,58 14,64 20,47 4,38 20,29 14,12 31,18" fill="url(#lg)"/>
+    <circle cx="40" cy="38" r="18" fill="none" stroke="rgba(255,230,120,0.35)" stroke-width="1"/>
+    <text x="40" y="43" text-anchor="middle" font-family="Cinzel,serif" font-size="10" fill="rgba(255,245,200,0.95)" letter-spacing="1.5">S&amp;A</text>
+  </svg>
+  <p class="loading-text">Menyediakan Jemputan...</p>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar" id="loadingBar"></div>
+  </div>
+</div>
+
 </body>
 </html>
