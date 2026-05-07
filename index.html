@@ -4,7 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jemputan Perkahwinan | Syada & Afiq</title>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+  <meta property="og:title" content="Jemputan Walimatulurus Afiq & Syada"/>
+  <meta property="og:description" content="Sabtu, 6 Jun 2026 | Teratak Abu Ubaidah, Kg Lubuk Payung, Jerantut, Pahang"/>
+  <meta property="og:image" content="https://afiq-syazwan192.github.io/wedding-invitation/preview-img.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:url" content="https://afiq-syazwan192.github.io/wedding-invitation/"/>
+  <meta property="og:type" content="website"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image" content="https://afiq-syazwan192.github.io/wedding-invitation/preview-img.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -638,7 +647,7 @@
     const bar = document.getElementById('loadingBar');
     let progress = 0;
     const interval = setInterval(() => {
-      progress += Math.random() * 18;
+      progress += Math.random() * 8;
       if (progress >= 90) { progress = 90; clearInterval(interval); }
       bar.style.width = progress + '%';
     }, 200);
@@ -661,7 +670,7 @@
 
     // Show invitation when iframe loads or after max 6s
     iframe.addEventListener('load', showInvitation);
-    setTimeout(showInvitation, 6000);
+    setTimeout(showInvitation, 10000);
   }
 
   // Toggle music
